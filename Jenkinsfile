@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     stages {
         stage('Build') {
             agent{
@@ -11,7 +11,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "Building..."
+                    echo "================Building the project================"
                     ls -la
                     node --version
                     npm --version
@@ -21,7 +21,25 @@ pipeline {
                 '''
             }
         }
-        stage('Test') {
+
+
+        stage('Test')   {
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps{
+                sh '''
+                    echo "================Testing the project================"
+                    test -f build/index.html
+                    npm test
+                '''
+            }
+        }
+
+        stage('Deploy') {
             agent{
                 docker{
                     image 'node:18-alpine'
@@ -30,12 +48,22 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "Testing..."
-                    test -f build/index.html
-                    npm test
+                    echo "================Deploying the project================"
+                    ping -c 3 8.8.8.8 ; echo $?
+                    ping -c 3  registry.npmjs.org ; echo $?
+                    ls -la
+                    node --version
+                    npm --version
+                    npm install netlify-cli --save-dev
                 '''
             }
         }
-        
+
+
+    }
+    post {
+        always{
+            junit 'test-results/junit.xml'
+        }
     }
 }
