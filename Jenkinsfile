@@ -34,7 +34,7 @@ pipeline {
         steps {
             echo "Running function load test..."
             sh '''
-                node -e "require('./netlify/functions/random-song.js'); console.log('Function loaded successfully!')"
+                node -e "require('./netlify/functions/random-menu.js'); console.log('Function loaded successfully!')"
             '''
         }
     }
