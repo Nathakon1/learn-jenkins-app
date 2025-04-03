@@ -18,7 +18,7 @@ pipeline {
             echo " Verifying required files..."
             sh '''
                 test -f index.html || (echo "index.html is missing!" && exit 1)
-                test -f netlify/functions/random-song.js || (echo "The random song function is missing!" && exit 1)
+                test -f netlify/functions/random-menu.js || (echo "The random menu function is missing!" && exit 1)
                 echo "All necessary files are in place!"
             '''
         }
